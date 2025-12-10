@@ -1,0 +1,15 @@
+{
+    "server": {
+        "port": 3000
+    },
+    "db_connection": {
+        "host": "127.0.0.1",
+        "user": "postgres",
+        "password": "asg148",
+        "database": "postgres"
+    },
+    "logger": {
+        "level": "info",
+        "file_path": "logs/log1.log"
+    }
+}
