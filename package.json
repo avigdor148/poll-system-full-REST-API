@@ -1,0 +1,33 @@
+{
+  "name": "27.03.2024",
+  "version": "1.0.0",
+  "description": "nodejs full rest api",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "mocha --watch *.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fullstack270923/27.03.2024.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fullstack270923/27.03.2024/issues"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "chai": "^4.5.0",
+    "chai-http": "^4.4.0",
+    "config": "^3.3.12",
+    "cors": "^2.8.5",
+    "expect": "^30.2.0",
+    "express": "^4.19.2",
+    "knex": "^3.1.0",
+    "mocha": "^10.4.0",
+    "pg": "^8.11.3",
+    "should": "^13.2.3",
+    "winston": "^3.18.3"
+  }           
+}
