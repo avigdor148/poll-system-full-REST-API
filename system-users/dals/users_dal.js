@@ -48,12 +48,13 @@ async function create_table() {
 
 async function insert_users5() {
     try {
-        const sql = `INSERT INTO jusers (name, age, email, city) VALUES
-    ('Arya Stark', 18, 'arya.stark@example.com', 'Winterfell'),
-    ('Jon Snow', 20, 'jon.snow@example.com', 'The Wall'),
-    ('Daenerys Targaryen', 22, 'daenerys.targaryen@example.com', 'Dragonstone'),
-    ('Tyrion Lannister', 24, 'tyrion.lannister@example.com', 'King''s Landing'),
-    ('Sansa Stark', 19, 'sansa.stark@example.com', 'Winterfell');`;
+        const sql = `INSERT INTO users (name, last_name, email, password, birthday, address) VALUES
+    ('Arya', 'Stark', 'arya.stark@example.com', 'aryapass123', '2006-03-15', 'Winterfell'),
+    ('Jon', 'Snow', 'jon.snow@example.com', 'jonsnow456', '2004-12-03', 'Castle Black, The Wall'),
+    ('Daenerys', 'Targaryen', 'daenerys.targaryen@example.com', 'dragons789', '2002-07-22', 'Dragonstone'),
+    ('Tyrion', 'Lannister', 'tyrion.lannister@example.com', 'tyrion987', '2000-01-11', 'King''s Landing'),
+    ('Sansa', 'Stark', 'sansa.stark@example.com', 'sansa654', '2005-08-09', 'Winterfell');
+`;
 
         await data_base.raw(sql);
 
@@ -138,7 +139,7 @@ async function get_user_by_id(id) {
 
 async function delete_table() {
     try {
-        const result = await data_base.raw(`DROP TABLE  asgcompany;`);
+        const result = await data_base.raw(`DROP TABLE  users;`);
         return {
             response: 200,
             status: "success",
