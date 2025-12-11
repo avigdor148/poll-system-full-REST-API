@@ -9,7 +9,7 @@ const data_base = knex({
     client: 'pg',
     connection: {
         host: config.db_connection.host,
-        user: config.db_connection.user,
+        question: config.db_connection.question,
         password: config.db_connection.password,
         database: config.db_connection.database
     }
@@ -18,15 +18,15 @@ const data_base = knex({
 
 async function create_table() {
     try {
-        const result = await data_base.raw(`CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name  VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL ,
-    birthday DATE,
-    address TEXT
+        const result = await data_base.raw(`CREATE TABLE questions (
+    question_id SERIAL PRIMARY KEY,
+    question_title TEXT NOT NULL,
+    answer1 TEXT NOT NULL,
+    answer2 TEXT NOT NULL,
+    answer3 TEXT NOT NULL,
+    answer4 TEXT NOT NULL
 );
+
 `)
         console.log('create finished successfully');
         return {
@@ -46,14 +46,24 @@ async function create_table() {
     }
 }
 
-async function insert_users5() {
+async function insert_questions5() {
     try {
-        const sql = `INSERT INTO users (first_name, last_name, email, password, birthday, address) VALUES
-    ('Arya', 'Stark', 'arya.stark@example.com', 'aryapass123', '2006-03-15', 'Winterfell'),
-    ('Jon', 'Snow', 'jon.snow@example.com', 'jonsnow456', '2004-12-03', 'Castle Black, The Wall'),
-    ('Daenerys', 'Targaryen', 'daenerys.targaryen@example.com', 'dragons789', '2002-07-22', 'Dragonstone'),
-    ('Tyrion', 'Lannister', 'tyrion.lannister@example.com', 'tyrion987', '2000-01-11', 'King''s Landing'),
-    ('Sansa', 'Stark', 'sansa.stark@example.com', 'sansa654', '2005-08-09', 'Winterfell');
+        const sql = `INSERT INTO questions (question_title, answer1, answer2, answer3, answer4) VALUES
+    ('How satisfied are you with your current vehicle?',
+     'Very satisfied', 'Satisfied', 'Neutral', 'Not satisfied'),
+
+    ('What type of car do you plan to purchase next?',
+     'Sedan', 'SUV', 'Electric Vehicle', 'Truck'),
+
+    ('Which factor is most important when choosing a car?',
+     'Price', 'Fuel efficiency', 'Design', 'Safety features'),
+
+    ('How likely are you to recommend our company to others?',
+     'Very likely', 'Somewhat likely', 'Not sure', 'Unlikely'),
+
+    ('Where did you first hear about our company?',
+     'Online advertisement', 'Friend or family', 'Social media', 'Car dealership');
+
 `;
 
         await data_base.raw(sql);
@@ -82,9 +92,9 @@ async function insert_users5() {
     }
 }
 
-async function get_all_users() {
+async function get_all_questions() {
     try {
-        const result = await data_base.raw('SELECT * FROM users;');
+        const result = await data_base.raw('SELECT * FROM questions;');
         console.log(result.rowCount);
 
         return {
@@ -115,9 +125,9 @@ async function get_all_users() {
 
 ///1.send sql query 2..handle errors and return consistent response objects
 //2a handle server errors 2b handle not found 2c handle syntax errors
-async function get_user_by_id(id) {
+async function get_question_by_id(id) {
     try {
-        const result = await data_base.raw(`SELECT * FROM users WHERE id = ${id};`);
+        const result = await data_base.raw(`SELECT * FROM questions WHERE id = ${id};`);
 
         if (result.rows.length === 0) {
             return { status: 'error', type: 'not-found', response: 404 };
@@ -139,7 +149,7 @@ async function get_user_by_id(id) {
 
 async function delete_table() {
     try {
-        const result = await data_base.raw(`DROP TABLE  users;`);
+        const result = await data_base.raw(`DROP TABLE  questions;`);
         return {
             response: 200,
             status: "success",
@@ -156,9 +166,9 @@ async function delete_table() {
     }
 }
 
-async function delete_user_by_id(id) {
+async function delete_question_by_id(id) {
     try {
-        const result = await data_base.raw(`DELETE FROM users WHERE id = ${id} RETURNING *;`);
+        const result = await data_base.raw(`DELETE FROM questions WHERE id = ${id} RETURNING *;`);
 
         if (result.rowCount === 0) {
             return { status: 'error', type: 'not-found', response: 404 };
@@ -178,16 +188,16 @@ async function delete_user_by_id(id) {
     }
 }
 
-async function patch_user(id, updated_user) {
+async function patch_question(id, updated_question) {
     try {
         const query_arr = []
-        for (let key in updated_user) {
-            query_arr.push(`${key}='${updated_user[key]}'`)
+        for (let key in updated_question) {
+            query_arr.push(`${key}='${updated_question[key]}'`)
         }
 
         if (query_arr.length > 0) {
             // check how many employess updated?
-            const query = `UPDATE users set ${query_arr.join(', ')} where id=${id} RETURNING *;`
+            const query = `UPDATE questions set ${query_arr.join(', ')} where id=${id} RETURNING *;`
             const result = await data_base.raw(query)
             return { status: 'success', data: result.rows[0], response: 200 };
         } else {
@@ -210,10 +220,10 @@ async function patch_user(id, updated_user) {
 }
 
 
-async function update_user(id, updated_user) {
+async function update_question(id, updated_question) {
     try {
         const result = await data_base.raw(
-    `UPDATE users
+    `UPDATE questions
      SET name = ?, 
          last_name = ?, 
          email = ?, 
@@ -223,12 +233,12 @@ async function update_user(id, updated_user) {
      WHERE id = ?
      RETURNING *;`,
     [
-        updated_user.name || '',
-        updated_user.last_name || '',
-        updated_user.email || '',
-        updated_user.password || '',
-        updated_user.birthday || null,
-        updated_user.address || '',
+        updated_question.name || '',
+        updated_question.last_name || '',
+        updated_question.email || '',
+        updated_question.password || '',
+        updated_question.birthday || null,
+        updated_question.address || '',
         id
     ]
 );
@@ -258,5 +268,5 @@ async function update_user(id, updated_user) {
 
 
 module.exports = {
-    create_table, insert_users5, get_all_users, get_user_by_id, delete_table, delete_user_by_id, patch_user, update_user
+    create_table, insert_questions5, get_all_questions, get_question_by_id, delete_table, delete_question_by_id, patch_question, update_question
 }
